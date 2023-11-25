@@ -61,26 +61,22 @@ public class ParamTest {
     @ParameterizedTest
     @MethodSource("argDivide")
     public void paramTestDivide(Integer first, Integer second, Integer answer) {
-        String result = first + " / " + second + " = " + answer;
-        Assertions.assertEquals(calculatorService.divide(first, second), result);
+        if (answer == null) {
+            Assertions.assertThrows(ZeroTwoArgument.class, () -> {
+                calculatorService.divide(first, second);
+            });
+        } else {
+            String result = first + " / " + second + " = " + answer;
+            Assertions.assertEquals(calculatorService.divide(first, second), result);
+        }
+
     }
 
     public static Stream<Arguments> argDivide() {
         return Stream.of(
                 Arguments.of(2, 2, 1),
                 Arguments.of(20, 3, 6),
-                Arguments.of(222, 10, 22)
-        );
-    }
-    @ParameterizedTest
-    @MethodSource("argDivideEx")
-    public void paramTestDivideException(Integer first, Integer second, Integer answer) {
-        Assertions.assertThrows(ZeroTwoArgument.class,() ->{
-            calculatorService.divide(first, second);
-        });
-    }
-    public static Stream<Arguments> argDivideEx() {
-        return Stream.of(
+                Arguments.of(222, 10, 22),
                 Arguments.of(2, 0, null),
                 Arguments.of(123456789, 0, null),
                 Arguments.of(0, 0, null)
